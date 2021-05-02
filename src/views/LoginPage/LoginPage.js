@@ -25,6 +25,7 @@ import image from "assets/img/bg7.jpg";
 import { Authcontext } from "../../context/auth-context";
 import ErrorModel from "../../models/error-model";
 import SuccessModel from "../../models/success-model";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(styles);
 
@@ -51,8 +52,8 @@ export default function LoginPage(props) {
 
   const submit = async (e) => {
     e.preventDefault();
-    console.log(email)
-    console.log(password)
+    console.log(email);
+    console.log(password);
 
     try {
       let response = await fetch("http://localhost:5000/api/jardin/login", {
@@ -168,7 +169,6 @@ export default function LoginPage(props) {
                           </InputAdornment>
                         ),
                       }}
-                      
                     />
                     <CustomInput
                       labelText="Password"
@@ -197,6 +197,12 @@ export default function LoginPage(props) {
                     </Button>
                   </CardFooter>
                 </form>
+
+                <Button simple color="primary" size="lg" type="submit">
+                  <Link to="/signup-page" >
+                    Crée um compte
+                  </Link>
+                </Button>
               </Card>
             </GridItem>
           </GridContainer>
