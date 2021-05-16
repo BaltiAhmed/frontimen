@@ -26,7 +26,8 @@ import { Authcontext } from "../../context/auth-context";
 import ErrorModel from "../../models/error-model";
 import Button from "@material-ui/core/Button";
 import AjoutBTN from "views/Components/Sections/btnAjout";
-import { Link,useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import EmojiPeopleIcon from "@material-ui/icons/EmojiPeople";
 
 const useStyles = makeStyles(styles, {
   table: {
@@ -51,23 +52,20 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-
-export default function ListEnfant(props) {
+export default function ListParent(props) {
   const classes = useStyles();
   const { ...rest } = props;
 
-  const [enfants, setEnfants] = useState();
+  const [list, setList] = useState();
   const [error, seterror] = useState(null);
   const [success, setsuccess] = useState(null);
   const auth = useContext(Authcontext);
-
-  const id = useParams().id
 
   useEffect(() => {
     const sendRequest = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/enfant/jardin/${auth.userId}`
+          `http://localhost:5000/api/parent/jardin/${auth.userId}`
         );
 
         const responseData = await response.json();
@@ -75,7 +73,7 @@ export default function ListEnfant(props) {
           throw new Error(responseData.message);
         }
 
-        setEnfants(responseData.enfants);
+        setList(responseData.existingParent);
       } catch (err) {
         seterror(err.message);
       }
@@ -103,11 +101,9 @@ export default function ListEnfant(props) {
           <div className={classes.container}>
             <GridContainer justify="center">
               <GridItem xs={12} className={classes.navWrapper}>
-                <Link to={`/ajout-enfants/${id}`}>
-                  <AjoutBTN title="Ajout Enfant" />
-                </Link>
+                
                 <ErrorModel error={error} />
-                {enfants && (
+                {list && (
                   <TableContainer component={Paper}>
                     <Table
                       className={classes.table}
@@ -119,16 +115,18 @@ export default function ListEnfant(props) {
                           <StyledTableCell align="right">
                             Prenom
                           </StyledTableCell>
+                          <StyledTableCell align="right">Email</StyledTableCell>
                           <StyledTableCell align="right">
-                            Date de naissance
+                            Adresse
                           </StyledTableCell>
+                          <StyledTableCell align="right">Tel</StyledTableCell>
                           <StyledTableCell align="right">
                             Action
                           </StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {enfants.map((row) => (
+                        {list.map((row) => (
                           <StyledTableRow key={row.name}>
                             <StyledTableCell component="th" scope="row">
                               {row.nom}
@@ -137,12 +135,20 @@ export default function ListEnfant(props) {
                               {row.prenom}
                             </StyledTableCell>
                             <StyledTableCell align="right">
-                              {row.Dnaissance}
+                              {row.email}
                             </StyledTableCell>
                             <StyledTableCell align="right">
-                              <Button variant="outlined" color="primary">
-                                Consulter
-                              </Button>
+                              {row.adresse}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {row.tel}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              <Link to={`/liste-enfants/${row._id}`}>
+                                <Button variant="outlined" color="primary">
+                                  <EmojiPeopleIcon color="primary" />
+                                </Button>
+                              </Link>
                             </StyledTableCell>
                           </StyledTableRow>
                         ))}

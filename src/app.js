@@ -8,6 +8,8 @@ import LoginPage from "views/LoginPage/LoginPage.js";
 import React from "react";
 import SignupPage from "views/signupPage/signupPage";
 import ListEnfant from "views/listEnfants.js/listEnfant";
+import AjoutEnfant from "views/listEnfants.js/ajoutEnfant";
+import ListParent from "views/parents/list-parent";
 
 function App() {
   const { userId, token, login, logout } = UserAuth();
@@ -18,7 +20,9 @@ function App() {
       <React.Fragment>
         <Route path="/landing-page" component={LandingPage} />
         <Route path="/profile-page" component={ProfilePage} />
-        <Route path="/liste-enfants" component={ListEnfant} />
+        <Route path="/liste-enfants/:id" component={ListEnfant} />
+        <Route path="/ajout-enfants/:id" component={AjoutEnfant} />
+        <Route path="/liste-parents" component={ListParent} />
         <Route path="/" exact component={Components} />
       </React.Fragment>
     );

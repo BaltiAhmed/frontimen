@@ -18,6 +18,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
+import { Form } from "react-bootstrap";
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
@@ -25,59 +26,75 @@ import image from "assets/img/bg7.jpg";
 import { Authcontext } from "../../context/auth-context";
 import ErrorModel from "../../models/error-model";
 import SuccessModel from "../../models/success-model";
-import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(styles);
 
-export default function LoginPage(props) {
+export default function AjoutEnfant(props) {
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   setTimeout(function () {
     setCardAnimation("");
   }, 700);
 
+  const [nom, setNom] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [adresse, setAdresse] = useState();
+  const [tel, setTel] = useState();
+  const [date, setDate] = useState();
+  const [description, setDescription] = useState();
   const [error, seterror] = useState(null);
   const [success, setsuccess] = useState(null);
 
   const onchange = (e) => {
-    if (e.target.id === "email") {
+    if (e.target.name === "nom") {
+      setNom(e.target.value);
+    } else if (e.target.name === "email") {
       setEmail(e.target.value);
     } else if (e.target.name === "password") {
       setPassword(e.target.value);
+    } else if (e.target.name === "adresse") {
+      setAdresse(e.target.value);
+    } else if (e.target.name === "tel") {
+      setTel(e.target.value);
+    } else if (e.target.name === "date") {
+      setDate(e.target.value);
+    } else if (e.target.name === "description") {
+      setDescription(e.target.value);
     }
   };
 
-  const auth = useContext(Authcontext);
-
   const submit = async (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
 
     try {
-      let response = await fetch("http://localhost:5000/api/jardin/login", {
+      let response = await fetch("http://localhost:5000/api/jardin/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          nom: nom,
           email: email,
           password: password,
+          adresse: adresse,
+          tel: tel,
+          date: date,
+          description: description,
         }),
       });
       let responsedata = await response.json();
       if (!response.ok) {
         throw new Error(responsedata.message);
       }
-
-      auth.login(responsedata.jardin._id, responsedata.token);
-      window.location.href = "http://localhost:3000";
+      setsuccess(
+        "Votre demande est enregistre. Vous recever un email de confirmation dans les bref delais"
+      );
     } catch (err) {
       console.log(err);
       seterror(err.message || "probleme!!");
     }
   };
+
   const classes = useStyles();
   const { ...rest } = props;
   return (
@@ -99,11 +116,11 @@ export default function LoginPage(props) {
       >
         <div className={classes.container}>
           <GridContainer justify="center">
-            <GridItem xs={12} sm={12} md={4}>
+            <GridItem xs={8} >
               <Card className={classes[cardAnimaton]}>
                 <form className={classes.form} onSubmit={submit}>
                   <CardHeader color="primary" className={classes.cardHeader}>
-                    <h4>Login</h4>
+                    <h4>Ajout Enfant</h4>
                     <div className={classes.socialLine}>
                       <Button
                         justIcon
@@ -138,9 +155,11 @@ export default function LoginPage(props) {
                   <SuccessModel success={success} />
                   <p className={classes.divider}>Or Be Classical</p>
                   <CardBody>
-                    {/* <CustomInput
+                    <CustomInput
                       labelText="First Name..."
                       id="first"
+                      name="nom"
+                      onChange={onchange}
                       formControlProps={{
                         fullWidth: true,
                       }}
@@ -152,8 +171,7 @@ export default function LoginPage(props) {
                           </InputAdornment>
                         ),
                       }}
-                      
-                    /> */}
+                    />
                     <CustomInput
                       labelText="Email..."
                       id="email"
@@ -191,17 +209,58 @@ export default function LoginPage(props) {
                       name="password"
                       onChange={onchange}
                     />
+
+                    <CustomInput
+                      labelText="Adresse..."
+                      id="first"
+                      name="adresse"
+                      onChange={onchange}
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+
+                    <CustomInput
+                      labelText="telephone..."
+                      id="first"
+                      name="tel"
+                      onChange={onchange}
+                      formControlProps={{
+                        fullWidth: true,
+                      }}
+                    />
+
+                    <Form.Group controlId="formGridAddress1">
+                      <Form.Label>Date de creation</Form.Label>
+                      <br></br>
+                      <input
+                        type="date"
+                        id="start"
+                        name="date"
+                        min="1900-01-01"
+                        max="2021-12-31"
+                        required
+                        onChange={onchange}
+                      ></input>
+                    </Form.Group>
+
+                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                      <Form.Label>Description</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={5}
+                        required
+                        name="description"
+                        onChange={onchange}
+                      />
+                    </Form.Group>
                   </CardBody>
                   <CardFooter className={classes.cardFooter}>
                     <Button simple color="primary" size="lg" type="submit">
-                      Login
+                      Signup
                     </Button>
                   </CardFooter>
                 </form>
-
-                <Button simple color="primary" size="lg" type="submit">
-                  <Link to="/signup-page">Crée um compte</Link>
-                </Button>
               </Card>
             </GridItem>
           </GridContainer>
