@@ -27,9 +27,10 @@ import SuccessModel from "../../models/success-model";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
+
 const useStyles = makeStyles(styles);
 
-export default function AjoutEnfant(props) {
+export default function UpdateEnfant(props) {
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
   setTimeout(function () {
     setCardAnimation("");
@@ -89,7 +90,7 @@ export default function AjoutEnfant(props) {
   };
 
   const id = useParams().id;
-  const auth = useContext(Authcontext)
+  
 
   const submit = async (e) => {
     e.preventDefault();
@@ -100,11 +101,10 @@ export default function AjoutEnfant(props) {
       formData.append("nom", nom);
       formData.append("prenom", prenom);
       formData.append("Dnaissance", date);
-      formData.append("parentId", id);
-      formData.append("jardinId", auth.userId);
+      
 
-      await axios.post(
-        `http://localhost:5000/api/enfant/ajoutParJardin`,
+      await axios.patch(
+        `http://localhost:5000/api/enfant/${id}`,
         formData
       );
 
