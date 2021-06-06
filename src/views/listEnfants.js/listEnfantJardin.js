@@ -57,7 +57,7 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-export default function ListEnfant(props) {
+export default function ListEnfantJardin(props) {
   const classes = useStyles();
   const { ...rest } = props;
 
@@ -66,13 +66,13 @@ export default function ListEnfant(props) {
   const [success, setsuccess] = useState(null);
   const auth = useContext(Authcontext);
 
-  const id = useParams().id;
+  
 
   useEffect(() => {
     const sendRequest = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/enfant/parent/${id}`
+          `http://localhost:5000/api/enfant/jardin/${auth.userId}`
         );
 
         const responseData = await response.json();
@@ -108,7 +108,7 @@ export default function ListEnfant(props) {
           <div className={classes.container}>
             <GridContainer justify="center">
               <GridItem xs={12} className={classes.navWrapper}>
-                <Link to={`/ajout-enfants/${id}`}>
+                <Link to={`/liste-parents`}>
                   <AjoutBTN title="Ajout Enfant" />
                 </Link>
                 <ErrorModel error={error} />
@@ -135,71 +135,69 @@ export default function ListEnfant(props) {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {enfants
-                          .filter((el) => el.jardinId === auth.userId)
-                          .map((row) => (
-                            <StyledTableRow key={row.name}>
-                              <StyledTableCell component="th" scope="row">
-                                <Image
-                                  src={`http://localhost:5000/${row.photo}`}
-                                  roundedCircle
-                                  style={{ width: "100px", height: "100px" }}
-                                />
-                              </StyledTableCell>
-                              <StyledTableCell component="th" scope="row">
-                                {row.nom}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">
-                                {row.prenom}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">
-                                {row.Dnaissance}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">
-                                <GetParent parentId={row.parentId} />
-                                <Link to={`/update-parents/${row._id}`}>
-                                  <Button variant="outlined" color="primary">
-                                    <UpdateIcon style={{ color: "green" }} />
-                                  </Button>
-                                </Link>
-
-                                <Button variant="outlined" color="primary">
-                                  <DeleteForeverIcon
-                                    style={{ color: "red" }}
-                                    onClick={async (event) => {
-                                      try {
-                                        let response = await fetch(
-                                          `http://localhost:5000/api/enfant/${row._id}`,
-                                          {
-                                            method: "DELETE",
-                                            headers: {
-                                              "Content-Type":
-                                                "application/json",
-                                            },
-                                          }
-                                        );
-                                        let responsedata = await response.json();
-                                        if (!response.ok) {
-                                          throw new Error(responsedata.message);
+                        {enfants.map((row) => (
+                          <StyledTableRow key={row.name}>
+                            <StyledTableCell component="th" scope="row">
+                              <Image
+                                src={`http://localhost:5000/${row.photo}`}
+                                roundedCircle
+                                style={{ width: "100px", height: "100px" }}
+                              />
+                            </StyledTableCell>
+                            <StyledTableCell component="th" scope="row">
+                              {row.nom}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {row.prenom}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {row.Dnaissance}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              
+                              <GetParent parentId={row.parentId} />
+                              <Link to={`/update-parents/${row._id}`}>
+                              <Button variant="outlined" color="primary">
+                                <UpdateIcon style={{ color: "green" }} />
+                              </Button>
+                              </Link>
+                              
+                              <Button variant="outlined" color="primary">
+                                <DeleteForeverIcon
+                                  style={{ color: "red" }}
+                                  onClick={async (event) => {
+                                    try {
+                                      let response = await fetch(
+                                        `http://localhost:5000/api/enfant/${row._id}`,
+                                        {
+                                          method: "DELETE",
+                                          headers: {
+                                            "Content-Type": "application/json",
+                                          },
                                         }
-                                        setEnfants(
-                                          enfants.filter(
-                                            (el) => el._id !== row._id
-                                          )
-                                        );
-                                        setsuccess("Enfants bien suprimer");
-                                      } catch (err) {
-                                        console.log(err);
-                                        seterror(
-                                          err.message || "il y a un probleme"
-                                        );
+                                      );
+                                      let responsedata = await response.json();
+                                      if (!response.ok) {
+                                        throw new Error(responsedata.message);
                                       }
-                                    }}
-                                  />
-                                </Button>
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          ))}
+                                      setEnfants(
+                                        enfants.filter(
+                                          (el) => el._id !== row._id
+                                        )
+                                      );
+                                      setsuccess("Enfants bien suprimer");
+                                    } catch (err) {
+                                      console.log(err);
+                                      seterror(
+                                        err.message || "il y a un probleme"
+                                      );
+                                    }
+                                  }}
+                                />
+                              </Button>
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        ))}
                       </TableBody>
                     </Table>
                   </TableContainer>

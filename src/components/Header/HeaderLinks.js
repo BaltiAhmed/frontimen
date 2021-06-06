@@ -84,6 +84,17 @@ export default function HeaderLinks(props) {
               <Link to="/liste-parents" className={classes.dropdownLink}>
                 Liste Parents
               </Link>,
+              <Link to="/liste-enfant-jardin" className={classes.dropdownLink}>
+                Liste Enfants
+              </Link>,
+              <Link
+                className={classes.dropdownLink}
+                onClick={() => {
+                  auth.logout();
+                }}
+              >
+                Déconnexion
+              </Link>,
             ]}
           />
         </ListItem>

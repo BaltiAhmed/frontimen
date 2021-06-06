@@ -23,6 +23,7 @@ export const UserAuth = () => {
     setToken(null);
     setUserId(null);
     localStorage.removeItem("userData");
+    window.location.href = "http://localhost:3000";
   }, []);
 
 

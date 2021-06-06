@@ -28,6 +28,12 @@ import Button from "@material-ui/core/Button";
 import AjoutBTN from "views/Components/Sections/btnAjout";
 import { Link } from "react-router-dom";
 import EmojiPeopleIcon from "@material-ui/icons/EmojiPeople";
+import WorkIcon from "@material-ui/icons/Work";
+import _ from "lodash";
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles(styles, {
   table: {
@@ -57,6 +63,7 @@ export default function ListParent(props) {
   const { ...rest } = props;
 
   const [list, setList] = useState();
+  const [fulldata,setFulldata]=useState([])
   const [error, seterror] = useState(null);
   const [success, setsuccess] = useState(null);
   const auth = useContext(Authcontext);
@@ -74,6 +81,7 @@ export default function ListParent(props) {
         }
 
         setList(responseData.existingParent);
+        setFulldata(list)
       } catch (err) {
         seterror(err.message);
       }
@@ -81,6 +89,12 @@ export default function ListParent(props) {
 
     sendRequest();
   }, []);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handelSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <div>
@@ -101,8 +115,19 @@ export default function ListParent(props) {
           <div className={classes.container}>
             <GridContainer justify="center">
               <GridItem xs={12} className={classes.navWrapper}>
-                
                 <ErrorModel error={error} />
+                <InputLabel htmlFor="input-with-icon-adornment">
+                  Chercher
+                </InputLabel>
+                <Input
+                  id="input-with-icon-adornment"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  }
+                  onChange={handelSearch}
+                />
                 {list && (
                   <TableContainer component={Paper}>
                     <Table
@@ -126,7 +151,13 @@ export default function ListParent(props) {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {list.map((row) => (
+                        {list.filter((val)=>{
+                          if(searchTerm == ""){
+                            return val
+                          }else if(val.nom.includes(searchTerm)){
+                            return val
+                          }
+                        }).map((row) => (
                           <StyledTableRow key={row.name}>
                             <StyledTableCell component="th" scope="row">
                               {row.nom}
@@ -144,6 +175,43 @@ export default function ListParent(props) {
                               {row.tel}
                             </StyledTableCell>
                             <StyledTableCell align="right">
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={async (e) => {
+                                  try {
+                                    let response = await fetch(
+                                      `http://localhost:5000/api/jardin/delguer/${auth.userId}`,
+                                      {
+                                        method: "PATCH",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                          idParent: row._id,
+                                        }),
+                                      }
+                                    );
+                                    let responsedata = await response.json();
+                                    if (!response.ok) {
+                                      throw new Error(responsedata.message);
+                                    }
+                                    setsuccess(
+                                      "le parent " +
+                                        row.nom +
+                                        " " +
+                                        row.prenom +
+                                        " est maintenent déligué"
+                                    );
+                                  } catch (err) {
+                                    console.log(err);
+                                    seterror(err.message || "probleme!!");
+                                  }
+                                }}
+                              >
+                                <WorkIcon style={{ color: "greenyellow" }} />
+                              </Button>
+
                               <Link to={`/liste-enfants/${row._id}`}>
                                 <Button variant="outlined" color="primary">
                                   <EmojiPeopleIcon color="primary" />
