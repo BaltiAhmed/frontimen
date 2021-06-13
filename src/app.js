@@ -12,6 +12,12 @@ import AjoutEnfant from "views/listEnfants.js/ajoutEnfant";
 import ListParent from "views/parents/list-parent";
 import UpdateEnfant from "views/listEnfants.js/update-enfant";
 import ListEnfantJardin from "views/listEnfants.js/listEnfantJardin";
+import ListeActivity from "views/activity/liste-activity";
+import AjoutActivity from "views/activity/ajoutActivity";
+import UpdateActivity from "views/activity/update-activite";
+import ListeEvenement from "views/evenement/liste-evenement";
+import AjoutEvenement from "views/evenement/ajoutEvenement";
+import UpdateEvenement from "views/evenement/update-evenement";
 
 function App() {
   const { userId, token, login, logout } = UserAuth();
@@ -26,7 +32,13 @@ function App() {
         <Route path="/ajout-enfants/:id" component={AjoutEnfant} />
         <Route path="/liste-parents" component={ListParent} />
         <Route path="/liste-enfant-jardin" component={ListEnfantJardin} />
-        <Route path="/update-parents/:id" component={UpdateEnfant} />
+        <Route path="/update-enfant/:id" component={UpdateEnfant} />
+        <Route path="/liste-activity" component={ListeActivity} />
+        <Route path="/ajout-activity" component={AjoutActivity} />
+        <Route path="/update-activity/:id" component={UpdateActivity} />
+        <Route path="/liste-evenement" component={ListeEvenement} />
+        <Route path="/ajout-evenement" component={AjoutEvenement} />
+        <Route path="/update-evenement/:id" component={UpdateEvenement} />
         <Route path="/" exact component={Components} />
       </React.Fragment>
     );

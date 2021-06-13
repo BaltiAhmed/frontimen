@@ -57,22 +57,20 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-export default function ListEnfant(props) {
+export default function ListeActivity(props) {
   const classes = useStyles();
   const { ...rest } = props;
 
-  const [enfants, setEnfants] = useState();
+  const [list, setList] = useState();
   const [error, seterror] = useState(null);
   const [success, setsuccess] = useState(null);
   const auth = useContext(Authcontext);
-
-  const id = useParams().id;
 
   useEffect(() => {
     const sendRequest = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/enfant/parent/${id}`
+          `http://localhost:5000/api/activity/${auth.userId}`
         );
 
         const responseData = await response.json();
@@ -80,7 +78,7 @@ export default function ListEnfant(props) {
           throw new Error(responseData.message);
         }
 
-        setEnfants(responseData.enfants);
+        setList(responseData.existingActivity);
       } catch (err) {
         seterror(err.message);
       }
@@ -88,6 +86,8 @@ export default function ListEnfant(props) {
 
     sendRequest();
   }, []);
+
+  console.log(list)
 
   return (
     <div>
@@ -108,12 +108,12 @@ export default function ListEnfant(props) {
           <div className={classes.container}>
             <GridContainer justify="center">
               <GridItem xs={12} className={classes.navWrapper}>
-                <Link to={`/ajout-enfants/${id}`}>
-                  <AjoutBTN title="Ajout Enfant" />
+                <Link to={`/ajout-activity`}>
+                  <AjoutBTN title="Ajout activité" />
                 </Link>
                 <ErrorModel error={error} />
                 <SuccessModel success={success} />
-                {enfants && (
+                {list && (
                   <TableContainer component={Paper}>
                     <Table
                       className={classes.table}
@@ -122,12 +122,12 @@ export default function ListEnfant(props) {
                       <TableHead>
                         <TableRow>
                           <StyledTableCell>Image</StyledTableCell>
-                          <StyledTableCell>Nom</StyledTableCell>
+                          <StyledTableCell>Titre</StyledTableCell>
                           <StyledTableCell align="right">
-                            Prenom
+                            Type
                           </StyledTableCell>
                           <StyledTableCell align="right">
-                            Date de naissance
+                            Description
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             Action
@@ -135,71 +135,65 @@ export default function ListEnfant(props) {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {enfants
-                          .filter((el) => el.jardinId === auth.userId)
-                          .map((row) => (
-                            <StyledTableRow key={row.name}>
-                              <StyledTableCell component="th" scope="row">
-                                <Image
-                                  src={`http://localhost:5000/${row.photo}`}
-                                  roundedCircle
-                                  style={{ width: "100px", height: "100px" }}
-                                />
-                              </StyledTableCell>
-                              <StyledTableCell component="th" scope="row">
-                                {row.nom}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">
-                                {row.prenom}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">
-                                {row.Dnaissance}
-                              </StyledTableCell>
-                              <StyledTableCell align="right">
-                                <GetParent parentId={row.parentId} />
-                                <Link to={`/update-enfant/${row._id}`}>
-                                  <Button variant="outlined" color="primary">
-                                    <UpdateIcon style={{ color: "green" }} />
-                                  </Button>
-                                </Link>
-
+                        {list.map((row) => (
+                          <StyledTableRow key={row.titre}>
+                            <StyledTableCell component="th" scope="row">
+                              <Image
+                                src={`http://localhost:5000/${row.image}`}
+                                roundedCircle
+                                style={{ width: "100px", height: "100px" }}
+                              />
+                            </StyledTableCell>
+                            <StyledTableCell component="th" scope="row">
+                              {row.titre}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {row.type}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {row.description}
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              <Link to={`/update-activity/${row._id}`}>
                                 <Button variant="outlined" color="primary">
-                                  <DeleteForeverIcon
-                                    style={{ color: "red" }}
-                                    onClick={async (event) => {
-                                      try {
-                                        let response = await fetch(
-                                          `http://localhost:5000/api/enfant/${row._id}`,
-                                          {
-                                            method: "DELETE",
-                                            headers: {
-                                              "Content-Type":
-                                                "application/json",
-                                            },
-                                          }
-                                        );
-                                        let responsedata = await response.json();
-                                        if (!response.ok) {
-                                          throw new Error(responsedata.message);
-                                        }
-                                        setEnfants(
-                                          enfants.filter(
-                                            (el) => el._id !== row._id
-                                          )
-                                        );
-                                        setsuccess("Enfants bien suprimer");
-                                      } catch (err) {
-                                        console.log(err);
-                                        seterror(
-                                          err.message || "il y a un probleme"
-                                        );
-                                      }
-                                    }}
-                                  />
+                                  <UpdateIcon style={{ color: "green" }} />
                                 </Button>
-                              </StyledTableCell>
-                            </StyledTableRow>
-                          ))}
+                              </Link>
+
+                              <Button variant="outlined" color="primary">
+                                <DeleteForeverIcon
+                                  style={{ color: "red" }}
+                                  onClick={async (event) => {
+                                    try {
+                                      let response = await fetch(
+                                        `http://localhost:5000/api/activity/${row._id}`,
+                                        {
+                                          method: "DELETE",
+                                          headers: {
+                                            "Content-Type": "application/json",
+                                          },
+                                        }
+                                      );
+                                      let responsedata = await response.json();
+                                      if (!response.ok) {
+                                        throw new Error(responsedata.message);
+                                      }
+                                      setList(
+                                        list.filter((el) => el._id !== row._id)
+                                      );
+                                      setsuccess("Enfants bien suprimer");
+                                    } catch (err) {
+                                      console.log(err);
+                                      seterror(
+                                        err.message || "il y a un probleme"
+                                      );
+                                    }
+                                  }}
+                                />
+                              </Button>
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
