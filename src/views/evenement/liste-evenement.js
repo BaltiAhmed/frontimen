@@ -109,7 +109,7 @@ export default function ListeEvenement(props) {
             <GridContainer justify="center">
               <GridItem xs={12} className={classes.navWrapper}>
                 <Link to={`/ajout-evenement`}>
-                  <AjoutBTN title="Ajout activité" />
+                  <AjoutBTN title="Ajout evenement" />
                 </Link>
                 <ErrorModel error={error} />
                 <SuccessModel success={success} />

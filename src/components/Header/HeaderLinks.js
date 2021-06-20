@@ -93,6 +93,9 @@ export default function HeaderLinks(props) {
               <Link to="/liste-evenement" className={classes.dropdownLink}>
                 Mes Evenement
               </Link>,
+              <Link to="/profile-page" className={classes.dropdownLink}>
+                Mon profile
+              </Link>,
               <Link
                 className={classes.dropdownLink}
                 onClick={() => {

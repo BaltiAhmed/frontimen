@@ -20,7 +20,7 @@ import AjoutEvenement from "views/evenement/ajoutEvenement";
 import UpdateEvenement from "views/evenement/update-evenement";
 
 function App() {
-  const { userId, token, login, logout } = UserAuth();
+  const { userId, token, login, logout,user } = UserAuth();
 
   let routes;
   if (token) {
@@ -54,7 +54,7 @@ function App() {
   }
   return (
     <Authcontext.Provider
-      value={{ userId: userId, token: token, login: login, logout: logout }}
+      value={{ userId: userId, token: token, login: login, logout: logout,user:user }}
     >
       <BrowserRouter>{routes}</BrowserRouter>
     </Authcontext.Provider>

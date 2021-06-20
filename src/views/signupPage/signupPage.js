@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -18,7 +18,7 @@ import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
-import { Form } from "react-bootstrap";
+import { Form, Image } from "react-bootstrap";
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 
@@ -26,6 +26,7 @@ import image from "assets/img/bg7.jpg";
 import { Authcontext } from "../../context/auth-context";
 import ErrorModel from "../../models/error-model";
 import SuccessModel from "../../models/success-model";
+import axios from "axios";
 
 const useStyles = makeStyles(styles);
 
@@ -34,6 +35,43 @@ export default function SignupPage(props) {
   setTimeout(function () {
     setCardAnimation("");
   }, 700);
+
+  const [File, setFile] = useState();
+  const [previewUrl, setPreviewUrl] = useState();
+  const [isValid, setIsValid] = useState(false);
+
+  const filePickerRef = useRef();
+
+  useEffect(() => {
+    if (!File) {
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewUrl(fileReader.result);
+    };
+
+    fileReader.readAsDataURL(File);
+  }, [File]);
+
+  const pickedHandler = (event) => {
+    let pickedFile;
+    let fileIsValid = isValid;
+    if (event.target.files && event.target.files.length === 1) {
+      pickedFile = event.target.files[0];
+      setFile(pickedFile);
+      setIsValid(true);
+      fileIsValid = true;
+    } else {
+      setIsValid(false);
+      fileIsValid = false;
+    }
+    /* props.onInput(props.id, pickedFile, fileIsValid); */
+  };
+
+  const pickImageHandler = (event) => {
+    filePickerRef.current.click();
+  };
 
   const [nom, setNom] = useState();
   const [email, setEmail] = useState();
@@ -66,26 +104,18 @@ export default function SignupPage(props) {
   const submit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("image", File);
+    formData.append("nom", nom);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("adresse", adresse);
+    formData.append("tel", tel);
+    formData.append("date", date);
+    formData.append("description", description);
     try {
-      let response = await fetch("http://localhost:5000/api/jardin/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nom: nom,
-          email: email,
-          password: password,
-          adresse: adresse,
-          tel: tel,
-          date: date,
-          description: description,
-        }),
-      });
-      let responsedata = await response.json();
-      if (!response.ok) {
-        throw new Error(responsedata.message);
-      }
+      await axios.post(`http://localhost:5000/api/jardin/signup`, formData);
+
       setsuccess(
         "Votre demande est enregistre. Vous recever un email de confirmation dans les bref delais"
       );
@@ -116,7 +146,7 @@ export default function SignupPage(props) {
       >
         <div className={classes.container}>
           <GridContainer justify="center">
-            <GridItem xs={8} >
+            <GridItem xs={8}>
               <Card className={classes[cardAnimaton]}>
                 <form className={classes.form} onSubmit={submit}>
                   <CardHeader color="primary" className={classes.cardHeader}>
@@ -155,6 +185,41 @@ export default function SignupPage(props) {
                   <SuccessModel success={success} />
                   <p className={classes.divider}>Or Be Classical</p>
                   <CardBody>
+                    <div
+                      style={{
+                        width: "50%",
+                        marginBottom: "30px",
+                        marginTop: "20px",
+                      }}
+                    >
+                      <input
+                        ref={filePickerRef}
+                        style={{ display: "none" }}
+                        type="file"
+                        accept=".jpg,.png,.jpeg"
+                        onChange={pickedHandler}
+                      />
+                      <div>
+                        {previewUrl && (
+                          <Image
+                            src={previewUrl}
+                            alt="Preview"
+                            rounded
+                            style={{ width: "100%", height: "100%" }}
+                          />
+                        )}
+
+                        <Button
+                          type="button"
+                          variant="primary"
+                          onClick={pickImageHandler}
+                          style={{ marginTop: "20px" }}
+                        >
+                          Choisir une image
+                        </Button>
+                      </div>
+                      {!isValid && <p></p>}
+                    </div>
                     <CustomInput
                       labelText="First Name..."
                       id="first"

@@ -71,7 +71,7 @@ export default function LoginPage(props) {
         throw new Error(responsedata.message);
       }
 
-      auth.login(responsedata.jardin._id, responsedata.token);
+      auth.login(responsedata.jardin,responsedata.jardin._id, responsedata.token);
       window.location.href = "http://localhost:3000";
     } catch (err) {
       console.log(err);
