@@ -148,7 +148,6 @@ export default function ProfilePage(props) {
       );
 
       setsuccess("Votre demande est enregistre.");
-
     } catch (err) {
       console.log(err);
       seterror(err.message || "probleme!!");
@@ -333,9 +332,7 @@ export default function ProfilePage(props) {
                 </Card>
               </GridItem>
             </GridContainer>
-            <div className={classes.description}>
-              <p>{auth.user.description}</p>
-            </div>
+            <div className={classes.description}></div>
           </div>
         </div>
       </div>

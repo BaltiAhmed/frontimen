@@ -156,7 +156,7 @@ export default function ListEnfantJardin(props) {
                             <StyledTableCell align="right">
                               
                               <GetParent parentId={row.parentId} />
-                              <Link to={`/update-parents/${row._id}`}>
+                              <Link to={`/update-enfant/${row._id}`}>
                               <Button variant="outlined" color="primary">
                                 <UpdateIcon style={{ color: "green" }} />
                               </Button>
