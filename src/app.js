@@ -18,6 +18,7 @@ import UpdateActivity from "views/activity/update-activite";
 import ListeEvenement from "views/evenement/liste-evenement";
 import AjoutEvenement from "views/evenement/ajoutEvenement";
 import UpdateEvenement from "views/evenement/update-evenement";
+import Chat from "views/chat/chat";
 
 function App() {
   const { userId, token, login, logout,user } = UserAuth();
@@ -39,6 +40,7 @@ function App() {
         <Route path="/liste-evenement" component={ListeEvenement} />
         <Route path="/ajout-evenement" component={AjoutEvenement} />
         <Route path="/update-evenement/:id" component={UpdateEvenement} />
+        <Route path="/message/:id" component={Chat} />
         <Route path="/" exact component={Components} />
       </React.Fragment>
     );

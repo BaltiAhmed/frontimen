@@ -34,6 +34,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
+import ChatIcon from '@material-ui/icons/Chat';
 
 const useStyles = makeStyles(styles, {
   table: {
@@ -211,6 +212,12 @@ export default function ListParent(props) {
                               >
                                 <WorkIcon style={{ color: "greenyellow" }} />
                               </Button>
+
+                              <Link to={`/message/${row._id}`}>
+                                <Button variant="outlined" color="primary">
+                                  <ChatIcon color="primary" />
+                                </Button>
+                              </Link>
 
                               <Link to={`/liste-enfants/${row._id}`}>
                                 <Button variant="outlined" color="primary">
